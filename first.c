@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 //Henceforth x and y are LinearForm objects.
 //How to use:
 
@@ -16,7 +17,7 @@
 
 //5. LinearAdd(&x, &y, sign) adds y coefficients' values to x. Sign has 2 allowed states: 1 (x+y) and -1 (x-y). Only affects x. Returns void
 
-//6. LinearMultiply(&x, lambdaRe, lambdaIm) multiplies all coefficients by (lambdaRe + i*lambdaIm), returns void (only x gets changed)
+//6. LinearMultiply(&x, multiplier) multiplies all coefficients by dynamic array multiplier's coefficients: [0] for real, [1] for imaginary. Returns void (only x gets changed)
 
 
 typedef struct {
