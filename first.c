@@ -96,7 +96,7 @@ void LinearAdd(LinearForm *formMain, const LinearForm *formAdded, const int sign
 void LinearMultiply(LinearForm *form, const double *multiplier){
     for (int i = 0; i < LinearLength(form); ++i){
         form->arrayPointer[i][0] = form->arrayPointer[i][0] * multiplier[0] - form->arrayPointer[i][1] * multiplier[1];
-        form->arrayPointer[i][1] = form->arrayPointer[i][0] * multiplier[1] - form->arrayPointer[i][1] * multiplier[0];
+        form->arrayPointer[i][1] = form->arrayPointer[i][0] * multiplier[1] + form->arrayPointer[i][1] * multiplier[0];
     }
 }
 
