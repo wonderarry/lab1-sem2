@@ -18,4 +18,10 @@ int main(void){
     printf("%f\n%f\n", values[3][0], values[3][1]);
     printf("%f\n%f\n", returned[0], returned[1]);
 
+    LinearAssign(&y, 3, 220.0, 13400.0);
+    LinearAdd(&x, &y, -1);
+    returned = LinearValue(&x, values);
+    printf("%f\n%f\n", returned[0], returned[1]);
+    return 0;
+
 }
