@@ -58,7 +58,7 @@ double *ComplexValue(LinearForm *form, const double **valueArray){ //Allows to c
 void UILinearAssign(LinearForm *form){
     int enteredIndex;
     double* assignedValue = malloc(2 * sizeof(double));
-    printf("------------Assigning value to the LinearForm coefficient------------\n", );
+    printf("------------Assigning value to the LinearForm coefficient------------\n");
     printf("Enter item index: ");
     scanf("%d\n", enteredIndex);
     printf("Enter the real part of the coefficient: ");
@@ -76,7 +76,7 @@ void UILinearMultiply(LinearForm *form){
     scanf("%f\n", multiplier[0]);
     printf("Enter the iamginary part of the multiplier: ");
     scanf("%f\n", multiplier[1]);
-    form.LinearMultiply(&form, multiplier);
+    form->LinearMultiply(&form, multiplier);
     printf("------------Multiplied the LinearForm by coefficient [(%f) + (%f) * i]------------\n", multiplier[0], multiplier[1]);
 }
 
@@ -91,7 +91,7 @@ void UILinearValue(LinearForm *form){
         printf("Enter the iamginary part of the variable: ");
         scanf("%f\n", valueArray[i][1]);
     }
-    double *resultPointer = form.LinearValue(form, valueArray);
+    double *resultPointer = form->LinearValue(form, (void**)valueArray);
     printf("Result is [(%f) + (%f) * i]\n", resultPointer[0], resultPointer[1]);
     printf("------------Finished calculating------------\n");
 }
