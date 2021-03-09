@@ -21,13 +21,18 @@
 //6. LinearMultiply(&x, multiplier) multiplies all coefficients by dynamic array multiplier's coefficients: [0] for real, [1] for imaginary. Returns void (only x gets changed)
 
 
-struct imported{
+struct importedForm{
     int effectiveSize;
     int maximumSize;
-    double **arrayPointer;
-};
+    void **arrayPointer;
+    void (*LinearAdd)(void*, void*, int); //First LinearForm, second LinearForm, sign (1 for summation, -1 for detraction)
+    void (*LinearMultiply)(void*, void*); //LinearForm, object to multiply on
+    void *(*LinearValue)(void*, void**);    //LinearForm, array of objects (x1, x2, ..., xn variables)
+    int *isAssigned;
+  };
 
-typedef struct imported LinearForm;
+typedef struct importedForm LinearForm;
+
 
 
 int LinearLength(const LinearForm *form){
@@ -36,73 +41,56 @@ int LinearLength(const LinearForm *form){
 
 
 void LinearInit(LinearForm *form){
-    form->arrayPointer = calloc(1, sizeof(double*));
-    form->arrayPointer[0] = calloc(2, sizeof(double));
-
+    //printf("in linearin\n" );
+    form->arrayPointer = calloc(1, sizeof(void*));
+    //printf("calloc arrayPointer\n" );
     form->maximumSize = 1;
+    form->isAssigned = calloc(1, sizeof(int));
+    form->isAssigned[0] = 0;
 }
 
 
 void LinearResize(LinearForm *form, const int newLength){
-    if (form->maximumSize = 0){
+    //printf("entering LinearResize\n" );
+    if (form->maximumSize == 0){
+        //printf("going to linearinit\n" );
         LinearInit(form);
     }
-
     form->arrayPointer = realloc(form->arrayPointer, newLength);
-    for (int i = LinearLength(form) + 1; i < newLength; ++i){
-        form->arrayPointer[i] = calloc(2, sizeof(double));
+    form->isAssigned = realloc(form->isAssigned, newLength);
+    for (int i = form->maximumSize; i < newLength; ++i){
+        form->isAssigned[i] = 0;
+        //printf("i: %d formisassi: %d\n",i, form->isAssigned[i] );
     }
+    form->maximumSize = newLength;
 }
 
 
-void LinearAssign(LinearForm *form, const int itemIndex, const double itemValueRe, const double itemValueIm){
+void LinearAssign(LinearForm *form, const int itemIndex, const void *givenItem){
+
     if (form->maximumSize <= itemIndex){
+        //printf("linearassign max size lacking\n");
+        //printf("size before resize%d\n", form->maximumSize);
         LinearResize(form, itemIndex * 2);
+        //printf("size after resize%d\n", form->maximumSize);
+
     }
-
-    form->arrayPointer[itemIndex][0] = itemValueRe;
-    form->arrayPointer[itemIndex][1] = itemValueIm;
-
-    if (LinearLength(form) < itemIndex){
+    form->arrayPointer[itemIndex] = givenItem;
+    //printf("assigned arrayPointer\n" );
+    //printf("form is assigned [itemindex] %d\n",form->isAssigned[3] );
+    form->isAssigned[itemIndex] = 1;
+    //printf("assigned isAssigned\n" );
+    //printf("%d form isAssigned i == 3\n",form->isAssigned[3]);
+    if (itemIndex > form->effectiveSize){
         form->effectiveSize = itemIndex + 1;
     }
 }
 
 
-double *LinearValue(LinearForm *form, const double **valueArray){
-    double *resultPointer = calloc(2, sizeof(double));
-
-    for (int i = 0; i < LinearLength(form); ++i){
-        resultPointer[0] += form->arrayPointer[i][0] * valueArray[i][0] - form->arrayPointer[i][1] * valueArray[i][1];
-        resultPointer[1] += form->arrayPointer[i][0] * valueArray[i][1] + form->arrayPointer[i][1] * valueArray[i][0];
-    }
-
-    return resultPointer;
-}
 
 
-void LinearAdd(LinearForm *formMain, const LinearForm *formAdded, const int sign){
-    if (formMain->maximumSize < LinearLength(formAdded)){
-        LinearResize(formMain, LinearLength(formAdded));
-    }
-
-    for (int i = 0; i < LinearLength(formAdded); ++i){
-        formMain->arrayPointer[i][0] += formAdded->arrayPointer[i][0] * sign;
-        formMain->arrayPointer[i][1] += formAdded->arrayPointer[i][1] * sign;
-    }
-
-    if (LinearLength(formMain) < LinearLength(formAdded)){
-        formMain->effectiveSize = LinearLength(formAdded);
-    }
-}
 
 
-void LinearMultiply(LinearForm *form, const double *multiplier){
-    for (int i = 0; i < LinearLength(form) + 1; ++i){
-        form->arrayPointer[i][0] = form->arrayPointer[i][0] * multiplier[0] - form->arrayPointer[i][1] * multiplier[1];
-        form->arrayPointer[i][1] = form->arrayPointer[i][0] * multiplier[1] + form->arrayPointer[i][1] * multiplier[0];
-    }
-}
 
 
 /*int main(void){
