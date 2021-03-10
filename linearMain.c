@@ -36,58 +36,76 @@ typedef struct importedForm LinearForm;
 
 
 int LinearLength(const LinearForm *form){
+    printf("entered LinearLength. it will return effectiveSize (hopefully)\n");
     return form->effectiveSize;
 }
 
 
 void LinearInit(LinearForm *form){
-    //printf("in linearin\n" );
+    printf("entered linearinit if\n" );
     form->arrayPointer = calloc(1, sizeof(void*));
-    //printf("calloc arrayPointer\n" );
+    printf("calloc arrayPointer\n" );
     form->maximumSize = 1;
+    printf("maxsize = 1\n" );
     form->isAssigned = calloc(1, sizeof(int));
+    printf("calloc isAssigned\n" );
     form->isAssigned[0] = 0;
+    printf("isAssigned[0](redundant, safety only) = 0\n" );
 }
 
 
 void LinearResize(LinearForm *form, const int newLength){
-    //printf("entering LinearResize\n" );
+
     if (form->maximumSize == 0){
-        //printf("going to linearinit\n" );
+        printf("entered linearinit if\n");
         LinearInit(form);
+        printf("initted\n" );
     }
+
     form->arrayPointer = realloc(form->arrayPointer, newLength);
+    printf("reallocated arrayPointer\n" );
     form->isAssigned = realloc(form->isAssigned, newLength);
+    printf("reallocated isAssigned\n" );
     for (int i = form->maximumSize; i < newLength; ++i){
+        printf("i loop, i = %d\n", i);
         form->isAssigned[i] = 0;
-        //printf("i: %d formisassi: %d\n",i, form->isAssigned[i] );
+        printf("isAssigned[%d] = 0\n", i);
     }
+    printf("exited i loop\n" );
     form->maximumSize = newLength;
+    printf("changed maximumSize\n" );
 }
 
 
-void LinearAssign(LinearForm *form, const int itemIndex, const void *givenItem){
-
+void LinearAssign(LinearForm *form, const int itemIndex, void *givenItem){
+    printf("entered assign\n");
     if (form->maximumSize <= itemIndex){
-        //printf("linearassign max size lacking\n");
-        //printf("size before resize%d\n", form->maximumSize);
+        printf("entered resize\n" );
         LinearResize(form, itemIndex * 2);
-        //printf("size after resize%d\n", form->maximumSize);
+        printf("out of resize\n" );
 
     }
+    printf("out of resize if\n" );
     form->arrayPointer[itemIndex] = givenItem;
-    //printf("assigned arrayPointer\n" );
-    //printf("form is assigned [itemindex] %d\n",form->isAssigned[3] );
+    printf("assigned givenItem\n" );
     form->isAssigned[itemIndex] = 1;
-    //printf("assigned isAssigned\n" );
-    //printf("%d form isAssigned i == 3\n",form->isAssigned[3]);
+    printf("changed isAssigned\n" );
     if (itemIndex > form->effectiveSize){
+        printf("entered effectiveSize if\n" );
         form->effectiveSize = itemIndex + 1;
+        printf("changed effectiveSize\n" );
     }
+    printf("exited assign\n" );
 }
 
 
-
+void LinearFree(LinearForm *form){
+    for (int i = 0; i < form->maximumSize; ++i){
+        free(form->arrayPointer[i]);
+    }
+    free(form->arrayPointer);
+    free(form->isAssigned);
+}
 
 
 

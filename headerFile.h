@@ -16,10 +16,8 @@ typedef struct importedForm LinearForm;
 int LinearLength(const LinearForm *form);
 void LinearInit(LinearForm *form);
 void LinearResize(LinearForm *form, const int newLength);
-void LinearAssign(LinearForm *form, const int itemIndex, const void *givenItem);
-//double *LinearValue(LinearForm *form, const double **valueArray);
-//void LinearAdd(LinearForm *formMain, const LinearForm *formAdded, const int sign);
-//void LinearMultiply(LinearForm *form, const double *multiplier);
+void LinearAssign(LinearForm *form, const int itemIndex, void *givenItem);
+
 
 #endif
 #include <stdio.h>
